@@ -15,8 +15,8 @@ import java.util.UUID;
 public class NotificationController {
 
     private final NotificationService service;
-    public NotificationController(NotificationRepository repo) {
-        this.service = new NotificationService(repo);
+    public NotificationController(NotificationService service) {
+        this.service = service;
     }
 
     // DTO для создания уведомлений

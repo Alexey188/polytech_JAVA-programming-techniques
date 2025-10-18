@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService service;
-    public UserController(UserRepository repo) { this.service = new UserService(repo); }
+    public UserController(UserService service) { 
+        this.service = service; 
+    }
 
     public record RegisterRequest(@Email @NotBlank String email,
                                   @NotBlank String fullName) {}
