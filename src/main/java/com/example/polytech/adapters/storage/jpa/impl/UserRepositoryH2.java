@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-@Repository @Profile("h2")
+@Repository @Profile({"h2","postgres"})
 public class UserRepositoryH2 implements UserRepository {
     private final UserJpaRepository jpa;
     public UserRepositoryH2(UserJpaRepository jpa){ this.jpa=jpa; }

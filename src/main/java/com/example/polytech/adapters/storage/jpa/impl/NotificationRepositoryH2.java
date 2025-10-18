@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import static java.util.stream.Collectors.toList;
 
-@Repository @Profile("h2")
+@Repository @Profile({"h2","postgres"})
 public class NotificationRepositoryH2 implements NotificationRepository {
     private final NotificationJpaRepository jpa;
     public NotificationRepositoryH2(NotificationJpaRepository jpa){ this.jpa=jpa; }

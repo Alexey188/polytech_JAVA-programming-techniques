@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import static java.util.stream.Collectors.toList;
 
-@Repository @Profile("h2")
+@Repository @Profile({"h2","postgres"})
 public class TaskRepositoryH2 implements TaskRepository {
     private final TaskJpaRepository jpa;
     public TaskRepositoryH2(TaskJpaRepository jpa){ this.jpa=jpa; }
