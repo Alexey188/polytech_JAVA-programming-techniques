@@ -22,6 +22,7 @@ class TaskServiceUnitTest {
             return m.values().stream().filter(t->t.userId().equals(u)&& t.status()==s && (inc || !t.deleted())).toList();
         }
         public Optional<Task> softDelete(UUID id){ return Optional.ofNullable(m.computeIfPresent(id,(k,v)->v.markDeleted())); }
+        public List<Task> findOverdueTasks(Instant now){ return m.values().stream().filter(t->!t.deleted()&&t.status()==com.example.polytech.domain.TaskStatus.PENDING&&t.targetDate()!=null&&t.targetDate().isBefore(now)).toList(); }
     }
 
     static class NoOpEventPublisher extends TaskEventPublisher {

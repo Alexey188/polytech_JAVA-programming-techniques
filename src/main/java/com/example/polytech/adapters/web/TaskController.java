@@ -1,13 +1,14 @@
 package com.example.polytech.adapters.web;
-import java.time.Instant;
+
 import com.example.polytech.domain.Task;
-import com.example.polytech.ports.TaskRepository;
 import com.example.polytech.ports.TaskService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,12 +29,12 @@ public class TaskController {
     }
 
     @GetMapping
-    public java.util.List<Task> all(@PathVariable UUID userId) {
+    public List<Task> all(@PathVariable UUID userId) {
         return service.listUserTasks(userId);
     }
 
     @GetMapping("/pending")
-    public java.util.List<Task> pending(@PathVariable UUID userId) {
+    public List<Task> pending(@PathVariable UUID userId) {
         return service.listUserPending(userId);
     }
 
@@ -45,5 +46,5 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(TaskService.NotFound.class)
-    public void notFound() { /* 404 */ }
+    public void notFound() {}
 }

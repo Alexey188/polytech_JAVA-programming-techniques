@@ -1,4 +1,3 @@
-// src/main/java/com/example/polytech/config/CacheConfig.java
 package com.example.polytech.config;
 
 import java.time.Duration;
@@ -27,7 +26,6 @@ public class CacheConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory cf) {
         log.info("Configuring Redis Cache Manager");
         
-        // Configure ObjectMapper for proper Java Time and polymorphic serialization
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.activateDefaultTyping(

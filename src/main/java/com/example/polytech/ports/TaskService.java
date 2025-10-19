@@ -1,4 +1,3 @@
-// src/main/java/com/example/polytech/ports/TaskService.java
 package com.example.polytech.ports;
 
 import com.example.polytech.adapters.messaging.TaskEventPublisher;
@@ -33,7 +32,6 @@ public class TaskService {
     })
     public Task create(Task t) {
         Task created = repo.save(t);
-        // Publish event to Kafka
         eventPublisher.publishTaskCreated(TaskCreatedEvent.from(created));
         return created;
     }

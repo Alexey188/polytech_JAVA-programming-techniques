@@ -45,4 +45,9 @@ public class TaskRepositoryH2 implements TaskRepository {
     @Override public Optional<Task> softDelete(UUID id){
         return jpa.findById(id).map(e -> { e.setDeleted(true); return toDomain(jpa.save(e)); });
     }
+
+    @Override public List<Task> findOverdueTasks(java.time.Instant now){
+        return jpa.findByTargetDateBeforeAndStatusAndDeletedFalse(now, TaskStatus.PENDING.name())
+                .stream().map(TaskRepositoryH2::toDomain).collect(toList());
+    }
 }

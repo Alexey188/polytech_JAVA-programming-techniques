@@ -1,9 +1,7 @@
 package com.example.polytech.adapters.web;
 
 import com.example.polytech.domain.Notification;
-import com.example.polytech.ports.NotificationRepository;
 import com.example.polytech.ports.NotificationService;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

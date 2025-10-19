@@ -12,7 +12,7 @@ public class TaskEntity {
     @Column(nullable=false) private UUID userId;
     @Column(nullable=false) private String title;
     @Column private String description;
-    @Column(nullable=false) private String status;   // PENDING/DONE
+    @Column(nullable=false) private String status;
     @Column(nullable=false) private boolean deleted;
     @Column(nullable=false) private Instant createdAt;
     @Column private Instant targetDate;

@@ -3,6 +3,7 @@ package com.example.polytech.ports;
 import com.example.polytech.domain.Task;
 import com.example.polytech.domain.TaskStatus;
 
+import java.time.Instant;
 import java.util.*;
 
 public interface TaskRepository {
@@ -10,5 +11,6 @@ public interface TaskRepository {
     Optional<Task> findById(UUID id);
     List<Task> findByUser(UUID userId, boolean includeDeleted);
     List<Task> findByUserAndStatus(UUID userId, TaskStatus status, boolean includeDeleted);
-    Optional<Task> softDelete(UUID id); // set deleted=true
+    Optional<Task> softDelete(UUID id);
+    List<Task> findOverdueTasks(Instant now);
 }
