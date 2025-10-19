@@ -19,29 +19,16 @@ public class NotificationController {
         this.service = service;
     }
 
-    // DTO для создания уведомлений
-    public record CreateNotificationRequest(@NotBlank String message) {}
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Notification create(@PathVariable UUID userId,
-                               @RequestBody CreateNotificationRequest body) {
-        return service.create(Notification.newNotification(userId, body.message()));
-    }
-
-    // GET — все уведомления пользователя
     @GetMapping
     public List<Notification> all(@PathVariable UUID userId) {
         return service.getAll(userId);
     }
 
-    // GET — только непрочитанные уведомления
     @GetMapping("/pending")
     public List<Notification> pending(@PathVariable UUID userId) {
         return service.getPending(userId);
     }
 
-    // PUT — пометить как прочитанное
     @PutMapping("/{id}/read")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markRead(@PathVariable UUID id) {

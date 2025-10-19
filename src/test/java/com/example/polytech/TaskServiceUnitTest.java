@@ -1,6 +1,8 @@
 package com.example.polytech;
 
+import com.example.polytech.adapters.messaging.TaskEventPublisher;
 import com.example.polytech.domain.Task;
+import com.example.polytech.domain.TaskCreatedEvent;
 import com.example.polytech.ports.TaskRepository;
 import com.example.polytech.ports.TaskService;
 import org.junit.jupiter.api.Test;
@@ -22,10 +24,20 @@ class TaskServiceUnitTest {
         public Optional<Task> softDelete(UUID id){ return Optional.ofNullable(m.computeIfPresent(id,(k,v)->v.markDeleted())); }
     }
 
+    static class NoOpEventPublisher extends TaskEventPublisher {
+        public NoOpEventPublisher() {
+            super(null);
+        }
+        @Override
+        public void publishTaskCreated(TaskCreatedEvent event) {
+        }
+    }
+
     @Test
     void create_and_softDelete() {
         var repo = new MemRepo();
-        var svc = new TaskService(repo);
+        var eventPublisher = new NoOpEventPublisher();
+        var svc = new TaskService(repo, eventPublisher);
         UUID user = UUID.randomUUID();
         Task t = svc.create(Task.newTask(user, "A","d", Instant.parse("2030-01-01T00:00:00Z")));
         assertEquals(1, svc.listUserTasks(user).size());

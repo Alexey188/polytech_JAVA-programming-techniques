@@ -1,5 +1,7 @@
 package com.example.polytech;
 
+import com.example.polytech.domain.Notification;
+import com.example.polytech.ports.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +19,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest @AutoConfigureMockMvc @ActiveProfiles("inmem")
 class NotificationControllerTest {
     @Autowired MockMvc mvc;
+    @Autowired NotificationService notificationService;
     ObjectMapper om = new ObjectMapper();
 
     @Test
-    void create_list_pending_markRead() throws Exception {
+    void list_pending_markRead() throws Exception {
         UUID user = UUID.randomUUID();
 
-        var created = mvc.perform(post("/api/v1/users/"+user+"/notifications")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"message\":\"Deadline tomorrow\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.read").value(false))
-                .andReturn();
-
-        String id = om.readTree(created.getResponse().getContentAsString()).get("id").asText();
+        Notification created = notificationService.create(
+                Notification.newNotification(user, "Deadline tomorrow")
+        );
+        String id = created.id().toString();
 
         mvc.perform(get("/api/v1/users/"+user+"/notifications"))
                 .andExpect(status().isOk())

@@ -1,7 +1,9 @@
 // src/main/java/com/example/polytech/ports/TaskService.java
 package com.example.polytech.ports;
 
+import com.example.polytech.adapters.messaging.TaskEventPublisher;
 import com.example.polytech.domain.Task;
+import com.example.polytech.domain.TaskCreatedEvent;
 import com.example.polytech.domain.TaskStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +20,22 @@ public class TaskService {
     private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository repo;
-    public TaskService(TaskRepository repo) { this.repo = repo; }
+    private final TaskEventPublisher eventPublisher;
+
+    public TaskService(TaskRepository repo, TaskEventPublisher eventPublisher) {
+        this.repo = repo;
+        this.eventPublisher = eventPublisher;
+    }
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "taskListByUser", allEntries = true),
             @CacheEvict(cacheNames = "taskListByUserPending", allEntries = true)
     })
     public Task create(Task t) {
-        return repo.save(t);
+        Task created = repo.save(t);
+        // Publish event to Kafka
+        eventPublisher.publishTaskCreated(TaskCreatedEvent.from(created));
+        return created;
     }
 
     @Cacheable(

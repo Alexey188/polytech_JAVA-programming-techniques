@@ -8,5 +8,5 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("postgres")
 class FlywayIntegrationTest {
     @Test
-    void contextLoadsWithFlyway() { /* факт старта контекста и применения миграций */ }
+    void contextLoadsWithFlyway() { }
 }
