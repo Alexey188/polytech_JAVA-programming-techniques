@@ -1,3 +1,7 @@
+⚠️ IMPORTANT NOTICE:
+The current code in the repository matches the contents of branch Step_1.
+
+
 # ⚙️ Project Instructions
 
 ---
