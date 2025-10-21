@@ -38,4 +38,13 @@ public class InMemoryTaskRepository implements TaskRepository {
     @Override public Optional<Task> softDelete(UUID id) {
         return Optional.ofNullable(data.computeIfPresent(id, (k, v) -> v.markDeleted()));
     }
+
+    @Override public List<Task> findOverdueTasks(java.time.Instant now) {
+        return data.values().stream()
+                .filter(t -> !t.deleted())
+                .filter(t -> t.status() == TaskStatus.PENDING)
+                .filter(t -> t.targetDate() != null && t.targetDate().isBefore(now))
+                .sorted(Comparator.comparing(Task::targetDate))
+                .toList();
+    }
 }

@@ -1,3 +1,3 @@
 package com.example.polytech.domain;
 
-public enum TaskStatus {PENDING, DONE}
+public enum TaskStatus {PENDING, DONE, OVERDUE}
