@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    image: polytech:latest
+    container_name: polytech-app
+    environment:
+      SPRING_PROFILES_ACTIVE: "h2"
+    ports:
+      - "8080:8080"
