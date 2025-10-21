@@ -15,8 +15,8 @@ import java.util.UUID;
 public class TaskController {
     private final TaskService service;
 
-    public TaskController(TaskRepository repo) {
-        this.service = new TaskService(repo);
+    public TaskController(TaskService service) {
+        this.service = service;
     }
 
     public record CreateTaskRequest(@NotBlank String title, String description, Instant targetDate) {}

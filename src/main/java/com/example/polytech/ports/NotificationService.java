@@ -1,10 +1,12 @@
 package com.example.polytech.ports;
 
 import com.example.polytech.domain.Notification;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class NotificationService {
     private final NotificationRepository repo;
     public NotificationService(NotificationRepository repo) { this.repo = repo; }
