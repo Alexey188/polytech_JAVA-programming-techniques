@@ -1,17 +1,67 @@
+// src/main/java/com/example/polytech/ports/TaskService.java
 package com.example.polytech.ports;
 
+import com.example.polytech.adapters.messaging.TaskEventPublisher;
 import com.example.polytech.domain.Task;
+import com.example.polytech.domain.TaskCreatedEvent;
 import com.example.polytech.domain.TaskStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
+@Service
 public class TaskService {
-    private final TaskRepository repo;
-    public TaskService(TaskRepository repo) { this.repo = repo; }
+    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 
-    public Task create(Task t) { return repo.save(t); }
-    public List<Task> listUserTasks(UUID userId) { return repo.findByUser(userId, false); }
-    public List<Task> listUserPending(UUID userId) { return repo.findByUserAndStatus(userId, TaskStatus.PENDING, false); }
+    private final TaskRepository repo;
+    private final TaskEventPublisher eventPublisher;
+
+    public TaskService(TaskRepository repo, TaskEventPublisher eventPublisher) {
+        this.repo = repo;
+        this.eventPublisher = eventPublisher;
+    }
+
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "taskListByUser", allEntries = true),
+            @CacheEvict(cacheNames = "taskListByUserPending", allEntries = true)
+    })
+    public Task create(Task t) {
+        Task created = repo.save(t);
+        // Publish event to Kafka
+        eventPublisher.publishTaskCreated(TaskCreatedEvent.from(created));
+        return created;
+    }
+
+    @Cacheable(
+            cacheNames = "taskListByUser",
+            key = "#userId.toString()",
+            unless = "#result == null || #result.isEmpty()"
+    )
+    public List<Task> listUserTasks(UUID userId) {
+        log.info("CACHE MISS - DB HIT: listUserTasks for userId={}", userId);
+        return repo.findByUser(userId, false);
+    }
+
+    @Cacheable(
+            cacheNames = "taskListByUserPending",
+            key = "#userId.toString()",
+            unless = "#result == null || #result.isEmpty()"
+    )
+    public List<Task> listUserPending(UUID userId) {
+        log.info("CACHE MISS - DB HIT: listUserPending for userId={}", userId);
+        return repo.findByUserAndStatus(userId, TaskStatus.PENDING, false);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "taskListByUser", allEntries = true),
+            @CacheEvict(cacheNames = "taskListByUserPending", allEntries = true)
+    })
     public void softDelete(UUID taskId) {
         if (repo.softDelete(taskId).isEmpty()) throw new NotFound();
     }
